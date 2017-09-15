@@ -129,6 +129,19 @@ else ifeq ($(platform), ctr)
    PLATFORM_DEFINES := -D_3DS
    STATIC_LINKING := 1
 
+else ifneq (,$(findstring armv,$(platform)))
+   TARGET := $(TARGET_NAME)_libretro.so
+   fpic := -fPIC
+   SHARED := -shared -Wl,--version-script=libretro/link.T -Wl,--no-undefined
+   ARM_ASM = 1
+   ASM_CPU = 0
+   ASM_SPC700 = 0
+   CFLAGS += -fno-builtin -fno-exceptions
+   CFLAGS += -DARM
+   CFLAGS += -march=armv6k -mtune=mpcore -mfloat-abi=hard
+   CFLAGS += -Wall -mword-relocations
+   CFLAGS += -fomit-frame-pointer -ffast-math
+
 # Emscripten
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_$(platform).bc
